@@ -1,8 +1,14 @@
 const { Router } = require('express');
-const { check, query } = require('express-validator');
-const { isValidRole, existEmail, existUserById } = require('../helpers/db-validators');
-const { validarCampos } = require('../middleware/validar_campos');
+const { query, body, param } = require('express-validator');
 
+const { 
+        validarCampos,
+        validarJWT,
+        haveRole,
+        isAdminRole
+}  = require('../middleware')
+
+const { isValidRole, existEmail, existUserById } = require('../helpers/db-validators');
 const { usuariosGet, 
         usuariosPut, 
         usuariosPost, 
@@ -19,22 +25,25 @@ router.get('/', [
 ],usuariosGet);
 
 router.put('/:id',[
-        check('id', 'Invalid id').isMongoId().custom( existUserById ),
-        check('role').custom( isValidRole ).optional(),
+        param('id', 'Invalid id').isMongoId().custom( existUserById ),
+        param('role').custom( isValidRole ).optional(),
         validarCampos
 ], usuariosPut);
 
 router.post('/', [
-        check('name', 'Invalid name').not().isEmpty(),
-        check('password', 'Invalid password').isLength(6),
-        check('email', 'Invalid Email').isEmail().custom( existEmail ),
+        body('name', 'Invalid name').not().isEmpty(),
+        body('password', 'Invalid password').isLength(6),
+        body('email', 'Invalid Email').isEmail().custom( existEmail ),
         //check('role', 'Invalid role').isIn(['ADMIN_ROLE', 'USER_ROLE']),
-        check('role').custom( isValidRole ),
+        body('role').custom( isValidRole ),
         validarCampos
 ] , usuariosPost);  
 
 router.delete('/:id', [
-        check('id', 'Invalid id').isMongoId().custom( existUserById ),
+        validarJWT,
+        //isAdminRole,
+        haveRole('ADMIN_ROLE'),
+        param('id', 'Invalid id').isMongoId().custom( existUserById ),
         validarCampos
 ], usuariosDelete);
 
