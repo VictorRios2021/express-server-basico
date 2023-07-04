@@ -8,7 +8,6 @@ const isValidRole = async(role = '') =>{
     }
 }
 
-
 const existEmail = async (email = '') => {
     const existEmailDB = await Usuario.findOne({ email });
     if ( existEmailDB ) {

@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const { dbConection } = require('../db/config');
 
+const { dbConection } = require('../db/config');
 
 class Server {
     constructor() {
@@ -38,8 +38,6 @@ class Server {
             console.log('Servidor escuchando en ', this.port);
         } )
     }
-
-
 }
 
 module.exports = Server;

@@ -1,5 +1,4 @@
 
-
 const isAdminRole = ( req, res, next ) => {
     if( !req.user ) return res.status(500).json({
         msg: 'User not available',
